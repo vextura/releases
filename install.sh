@@ -65,3 +65,4 @@ install -m 755 "${TMP}/vexctl" "${INSTALL_DIR}/${BINARY}"
 
 echo "vexctl installed successfully."
 "${INSTALL_DIR}/${BINARY}" --version
+
