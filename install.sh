@@ -1,7 +1,8 @@
 #!/usr/bin/env sh
 # vexctl installer — downloads the latest release from github.com/vextura/releases
-# Usage: curl -fsSL https://raw.githubusercontent.com/vextura/releases/main/install.sh | sh
-# Or pin a version: VERSION=v1.0.0 curl -fsSL ... | sh
+# Usage: curl -fsSL https://github.com/vextura/releases/releases/latest/download/install.sh | sudo sh
+# Or pin a version: VERSION=v1.0.0 ... | sudo sh
+# Or install to a user-writable dir: INSTALL_DIR=~/bin ... | sh
 
 set -e
 
@@ -32,9 +33,9 @@ case "$OS" in
 esac
 
 case "$ARCH" in
-  x86_64 | amd64)  ARCH="amd64" ;;
+  x86_64 | amd64)   ARCH="amd64" ;;
   arm64  | aarch64) ARCH="arm64" ;;
-  *)                die "unsupported architecture: $ARCH" ;;
+  *)                 die "unsupported architecture: $ARCH" ;;
 esac
 
 # ---------- resolve version ----------
@@ -47,6 +48,16 @@ fi
 [ -n "$VERSION" ] || die "could not determine latest version"
 
 echo "Installing vexctl ${VERSION} (${OS}/${ARCH}) → ${INSTALL_DIR}/${BINARY}"
+
+# ---------- check write permission ----------
+
+if [ ! -w "$INSTALL_DIR" ]; then
+  echo "error: cannot write to ${INSTALL_DIR} — re-run with sudo:" >&2
+  echo "  curl -fsSL https://github.com/vextura/releases/releases/latest/download/install.sh | sudo sh" >&2
+  echo "Or install to a user directory:" >&2
+  echo "  INSTALL_DIR=\$HOME/.local/bin curl -fsSL ... | sh" >&2
+  exit 1
+fi
 
 # ---------- download & install ----------
 
@@ -65,4 +76,3 @@ install -m 755 "${TMP}/vexctl" "${INSTALL_DIR}/${BINARY}"
 
 echo "vexctl installed successfully."
 "${INSTALL_DIR}/${BINARY}" --version
-
