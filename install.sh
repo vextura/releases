@@ -50,7 +50,9 @@ echo "Installing vexctl ${VERSION} (${OS}/${ARCH}) → ${INSTALL_DIR}/${BINARY}"
 
 # ---------- download & install ----------
 
-ARCHIVE="vexctl_${VERSION}_${OS}_${ARCH}.tar.gz"
+# Tag is v1.0.0 but GoReleaser strips the v from archive filenames → vexctl_1.0.0_...
+VER="${VERSION#v}"
+ARCHIVE="vexctl_${VER}_${OS}_${ARCH}.tar.gz"
 URL="https://github.com/${REPO}/releases/download/${VERSION}/${ARCHIVE}"
 
 TMP=$(mktemp -d)
